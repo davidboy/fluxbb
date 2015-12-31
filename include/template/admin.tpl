@@ -14,11 +14,8 @@
 <div id="brdheader" class="block">
 	<div class="box">
 		<div id="brdtitle" class="inbox">
-			<pun_title>
-			<pun_desc>
+			<h1><a href="/">&larr; Back to InsideCHATTer</a></h1>
 		</div>
-		<pun_navlinks>
-		<pun_status>
 	</div>
 </div>
 

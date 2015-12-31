@@ -15,9 +15,9 @@
 	<div class="box">
 		<div id="brdtitle" class="inbox">
 			<pun_title>
-			<pun_desc>
+			<!--<pun_desc>-->
 		</div>
-		<pun_navlinks>
+		<!--<pun_navlinks>-->
 		<pun_status>
 	</div>
 </div>
