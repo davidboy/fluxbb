@@ -34,5 +34,7 @@
 <div class="end-box"></div>
 </div>
 
+<script type="text/javascript" src="iframeResizer.contentWindow.min.js"></script>
+
 </body>
 </html>
