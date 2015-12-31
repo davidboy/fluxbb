@@ -219,7 +219,8 @@ if (!empty($forum_actions))
 }
 
 ?>
-<div id="brdstats" class="block">
+<br />
+<!-- <div id="brdstats" class="block">
 	<h2><span><?php echo $lang_index['Board info'] ?></span></h2>
 	<div class="box">
 		<div class="inbox">
@@ -271,7 +272,7 @@ else
 ?>
 		</div>
 	</div>
-</div>
+</div> -->
 <?php
 
 $footer_style = 'index';
