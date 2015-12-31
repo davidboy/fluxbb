@@ -236,18 +236,27 @@ while ($cur_post = $db->fetch_assoc($result))
 	$is_online = '';
 	$signature = '';
 
+	$user_id = $cur_post['poster_id'];
+	$chatter_result = $db->query('SELECT a.name AS agency, a.id AS agency_id, u.role, u.phone, u.best_contact_time FROM users AS u INNER JOIN agencies AS a ON u.agency_id=a.id WHERE u.id = ' . $user_id);
+	
+	$chatter_user = $db->fetch_assoc($chatter_result);
+	if (!$chatter_user) {
+		$chatter_user = array('agency' => 'BANNED');
+	}
+
 	// If the poster is a registered user
 	if ($cur_post['poster_id'] > 1)
 	{
-		if ($pun_user['g_view_users'] == '1')
-			$username = '<a href="profile.php?id='.$cur_post['poster_id'].'">'.pun_htmlspecialchars($cur_post['username']).'</a>';
-		else
-			$username = pun_htmlspecialchars($cur_post['username']);
+		// if ($pun_user['g_view_users'] == '1')
+		// 	$username = '<a href="profile.php?id='.$cur_post['poster_id'].'">'.pun_htmlspecialchars($cur_post['username']).'</a>';
+		$username = pun_htmlspecialchars($cur_post['username']);
 
-		$user_title = get_title($cur_post);
+		// $user_title = get_title($cur_post);
 
-		if ($pun_config['o_censoring'] == '1')
-			$user_title = censor_words($user_title);
+		// if ($pun_config['o_censoring'] == '1')
+		// 	$user_title = censor_words($user_title);
+		$agency_id = $chatter_user['agency_id'];;
+		$user_title = "<a target=\"_parent\" href=\"/agencies/$agency_id\">".pun_htmlspecialchars($chatter_user['agency']).'</a>';
 
 		// Format the online indicator
 		$is_online = ($cur_post['is_online'] == $cur_post['poster_id']) ? '<strong>'.$lang_topic['Online'].'</strong>' : '<span>'.$lang_topic['Offline'].'</span>';
@@ -258,6 +267,11 @@ while ($cur_post = $db->fetch_assoc($result))
 				$user_avatar = $user_avatar_cache[$cur_post['poster_id']];
 			else
 				$user_avatar = $user_avatar_cache[$cur_post['poster_id']] = generate_avatar_markup($cur_post['poster_id']);
+		}
+
+		if ($chatter_user['role']) {
+			$user_info[] = '<dd><span>'.pun_htmlspecialchars($chatter_user['role']).'</span></dd>';
+			$user_info[] = '<dd><span>&nbsp;</span></dd>';
 		}
 
 		// We only show location, register date, post count and the contact links if "Show user info" is enabled
@@ -271,16 +285,13 @@ while ($cur_post = $db->fetch_assoc($result))
 				$user_info[] = '<dd><span>'.$lang_topic['From'].' '.pun_htmlspecialchars($cur_post['location']).'</span></dd>';
 			}
 
+			$user_info[] = '<dd><span><a href="mailto:'.pun_htmlspecialchars($cur_post['email']).'">'.pun_htmlspecialchars($cur_post['email']).'</a></span></dd>';
+			$user_info[] = '<dd><span>'.pun_htmlspecialchars($cur_post['phone']).'</span></dd>';
+
 			$user_info[] = '<dd><span>'.$lang_topic['Registered'].' '.format_time($cur_post['registered'], true).'</span></dd>';
 
 			if ($pun_config['o_show_post_count'] == '1' || $pun_user['is_admmod'])
 				$user_info[] = '<dd><span>'.$lang_topic['Posts'].' '.forum_number_format($cur_post['num_posts']).'</span></dd>';
-
-			// Now let's deal with the contact links (Email and URL)
-			if ((($cur_post['email_setting'] == '0' && !$pun_user['is_guest']) || $pun_user['is_admmod']) && $pun_user['g_send_email'] == '1')
-				$user_contacts[] = '<span class="email"><a href="mailto:'.pun_htmlspecialchars($cur_post['email']).'">'.$lang_common['Email'].'</a></span>';
-			else if ($cur_post['email_setting'] == '1' && !$pun_user['is_guest'] && $pun_user['g_send_email'] == '1')
-				$user_contacts[] = '<span class="email"><a href="misc.php?email='.$cur_post['poster_id'].'">'.$lang_common['Email'].'</a></span>';
 
 			if ($cur_post['url'] != '')
 			{
